@@ -1,20 +1,26 @@
-#include <stdlib.h>
 #include <stdio.h>
 #include "funciones.h"
-#define max 500
 
-int main(){
-    Lista *resultados_simce;
-    FILE *f;
-    f = fopen("datos.csv", "r");
-    char *linea;
-    while(!feof(f)){
-        fgets(linea, max, f);
-        Insertar(resultados_simce, linea);
-    }
-    fclose(f);
-    Print(resultados_simce);
-    printf("%d", resultados_simce->dif_lect2m_rbd);
-    limpiarLista(resultados_simce);
-    return 0;
+
+int main(int argc, char **argv){
+	Lista *head = NULL, *nuevo = NULL;
+	FILE *f;
+	f = fopen("datos.csv", "r");
+	char *linea;
+	linea = malloc(sizeof(char)*max);
+	while(fgets(linea, max, f)){
+		nuevo = (Lista*)malloc(sizeof(Lista));
+		nuevo = nuevoNodo(linea);
+		if(head == NULL){
+			head = (Lista*)malloc(sizeof(Lista));
+			head = nuevo;
+		}
+		else{
+			insertar(head, nuevo);
+		}
+		nuevo = NULL;
+		linea = malloc(sizeof(char)*max);
+	}
+	imprimir(head);
+	return 0;
 }

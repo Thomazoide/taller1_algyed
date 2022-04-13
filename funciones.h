@@ -1,74 +1,50 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define max 500
+#define max 1000
 
 typedef struct list{
-    char nom_rbd[max];
-    char nom_reg_rbd[max];
-    char nom_com_rbd[max];
+    char *nom_rbd;
+    char *nom_reg_rbd;
+    char *nom_com_rbd;
     float dif_lect2m_rbd;
     int sigdif_lect2m_rbd;
-    char com_lect2m_rbd[max];
+    char *com_lect2m_rbd;
     struct list *sig;
 }Lista;
 
-void Insertar(Lista *l, char *linea){
-    Lista *nuevo;
-    nuevo = (Lista*)malloc(sizeof(Lista));
-    nuevo->sig = NULL;
-    char *token;
-    token = strtok(linea, "\n");
-    token = strtok(NULL, ",");
-    strcpy(nuevo->nom_rbd, token);
-    token = strtok(NULL, ",");
-    strcpy(nuevo->nom_reg_rbd, token);
-    token = strtok(NULL, ",");
-    strcpy(nuevo->nom_com_rbd, token);
-    token = strtok(NULL, ",");
-    nuevo->dif_lect2m_rbd = atof(token);
-    token = strtok(NULL, ",");
-    nuevo->sigdif_lect2m_rbd = atoi(token);
-    token = strtok(NULL, ",");
-    strcpy(nuevo->com_lect2m_rbd, token);
-    if(l == NULL){
-        l = nuevo;
-        l->sig = NULL;
-    }
-    else{
-        while(l->sig != NULL){
-            l = l->sig;
-        }
-        l->sig = nuevo;
-    }
+Lista *nuevoNodo(char *linea){
+	Lista *nuevo = (Lista*)malloc(sizeof(Lista));
+	linea = strtok(linea, "\n");
+	nuevo->nom_rbd = strtok(linea, ",");
+	nuevo->nom_reg_rbd = strtok(NULL, ",");
+	nuevo->nom_com_rbd = strtok(NULL, ",");
+	nuevo->dif_lect2m_rbd = atof(strtok(NULL, ","));
+	nuevo->sigdif_lect2m_rbd = atoi(strtok(NULL, ","));
+	nuevo->com_lect2m_rbd = strtok(NULL, ",");
+	return nuevo;
 }
 
-void Print(Lista *l){
-    printf("\n\tResultados SIMCE");
-    if(l == NULL){
-        printf("\nLista vacia, nada que mostrar.");
-    }
-    else{
-        while(l != NULL){
-            printf("\nNombre: %s\nRegion: %s\nComuna: %s\nDiferencia: %d\nSignificancia: %i\nComentario: %s", l->nom_rbd, l->nom_reg_rbd, l->nom_com_rbd, l->dif_lect2m_rbd, l->sigdif_lect2m_rbd, l->com_lect2m_rbd);
-        }
-    }
+void insertar(Lista *raiz, Lista *nuevo){
+	Lista *aux = (Lista*)malloc(sizeof(Lista));
+	aux = raiz;
+	while(aux->sig){
+		aux = aux->sig;
+	}
+	aux->sig = nuevo;
 }
 
-/*void llenarLista(Lista *l){
-    FILE *f;
-    f = fopen("datos.csv", "r");
-    char *linea;
-    while(!feof(f)){
-        fgets(linea, max, f);
-        insertar(l, linea);
-    }
-    fclose(f);
-}*/
-
-void limpiarLista(Lista *l){
-    while(l != NULL){
-        free(l);
-        l = l->sig;
-    }
+void imprimir(Lista *lis){
+	printf("\tResultados simce");
+	Lista* aux = (Lista*)malloc(sizeof(Lista));
+	aux = lis;
+	if(lis){
+		while(aux){
+			printf("\nNombre: %s\nRegion: %s\nComuna: %s\nDiferencia: %f\nSignificancia: %i\nComentario: %s", aux->nom_rbd, aux->nom_reg_rbd, aux->nom_com_rbd, aux->dif_lect2m_rbd, aux->sigdif_lect2m_rbd, aux->com_lect2m_rbd);
+			aux = aux->sig;
+		}
+	}
+	else{
+		printf("\nLista vacia....");
+	}
 }
